@@ -1,11 +1,24 @@
-const http = require('http');
+const express = require('express')
+const app = express()
+var cors = require('cors')
+const port = 3000
+var MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://admin:DbLv98QyYq6hawu@cluster0.dzgdm.mongodb.net?retryWrites=true&w=majority";
 
-const server = http.createServer((req, res) => {
-    res.status = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.send('Hello World');
-});
+app.use(cors())
 
-server.listen(3000, () => {
-    console.log('Serve on port 3000');
+app.get('/users', (req, res) => {
+  queryUsers(req, res);
+})
+
+async function queryUsers(req, res) {
+  const client = await MongoClient.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true});
+  const db = client.db('matricula');
+  const items = await db.collection('users').find({email : req.query.email, isAdmin: false}).toArray();
+  res.send(items);
+  client.close();
+}
+
+app.listen(port, () => {
+  console.log(`API ready and listening at port 3000`);
 })
