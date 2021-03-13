@@ -4,7 +4,7 @@ Este repositorio contiene la API que permitirá realizar conexiones con nuestro 
 
 Nota: Los parámetros de los Endpoints utilizan el principio de las URL Query: `?param=value`
 
-Para realizar el login desde la App:
+<br/>Para realizar el login desde la App:
 <table>
   <tr>
     <th colspan="3" >Get /users</th>
@@ -22,7 +22,7 @@ Para realizar el login desde la App:
 </table>
 
 
-Para guardar el token:
+<br/>Para guardar el token:
 <table>
   <tr>
     <th colspan="3" >Post /token</th>
