@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 var cors = require('cors')
-const PORT = process.env.PORT || 5000
+const port = process.env.PORT || 5000
 var MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://admin:DbLv98QyYq6hawu@cluster0.dzgdm.mongodb.net?retryWrites=true&w=majority";
 
