@@ -54,7 +54,7 @@ async function upgradeUser(req, res, token) {
   var newvalues = { $set: {token : token} };
   await db.collection("users").updateOne(myquery, newvalues, function(err, res) {
     if (err) throw err;
-    console.log("1 document updated");
+      console.log("1 document updated");
   });
 
   //await db.collection('users').updateOne({email : req.query.email}, item);
