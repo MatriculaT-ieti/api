@@ -11,7 +11,7 @@ var secretkey = "";
 app.use(cors());
 
 app.get('/', (req, res) => {
-   res.json('{"status": "ok"}')
+   res.json({status: 'ok' , inpirational_message: 'if you can read this, something powerful is going on in this API.'})
 });
 
 app.get('/users', (req, res) => {
