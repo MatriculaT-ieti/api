@@ -10,13 +10,17 @@ var secretkey = "";
 
 app.use(cors());
 
+app.get('/', (req, res) => {
+   res.json('{"status": "ok"}')
+});
+
 app.get('/users', (req, res) => {
     queryUsers(req, res);
-})
+});
 
 app.get('/admins', (req, res) => {
     queryUsers(req, res);
-})
+});
 
 async function queryUsers(req, res) {
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
