@@ -11,7 +11,7 @@ var secretkey = "";
 app.use(cors());
 
 app.get('/', (req, res) => {
-   res.json({status: 'ok' , inspirational_message: 'if you can read this, something powerful is going on in this API.'})
+    res.json({ status: 'ok', inspirational_message: 'if you can read this, something powerful is going on in this API.' });
 });
 
 app.get('/users', (req, res) => {
@@ -20,6 +20,10 @@ app.get('/users', (req, res) => {
 
 app.get('/admins', (req, res) => {
     queryUsers(req, res);
+});
+
+app.get('/cicle', (req, res) => {
+    importCicle(req, res);
 });
 
 async function queryUsers(req, res) {
@@ -71,6 +75,14 @@ async function upgradeUser(req, res, token) {
     });
 
     //await db.collection('users').updateOne({email : req.query.email}, item);
+}
+
+async function importCicle(req, res) {
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const db = client.db('matricula');
+    item = await db.collection('cycles').findOne({ nom_cicle: "Preimpressió digital" });
+
+    console.log(item);
 }
 
 app.listen(port, () => {
