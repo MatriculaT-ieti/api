@@ -143,6 +143,33 @@ function transformArrayToDict(cycle) {
     console.log(cycle_dict);
 
     return cycle_dict;
+
+    //const cycle_dict = {
+    //
+    //};
+    //
+    //cycle_dict["nom_cicle"] = cycle[0];
+    //
+    //for (var i = 1; i < cycle.length; i++) {
+    //    if (cycle[i].charAt(0) == 'M' && cycle[i].charAt(1) == 'P') {
+    //        var module = cycle[i];
+    //
+    //        var unitys = [];
+    //        for (let j = i + 1; j < cycle.length; j++) {
+    //            if (cycle[j].charAt(0) == "U" && cycle[j].charAt(1) == "F") {
+    //                unitys.push(cycle[j]);
+    //            } else {
+    //                break;
+    //            }
+    //        }
+    //
+    //        cycle_dict[module] = unitys;
+    //    }
+    //}
+    //
+    //console.log(cycle_dict);
+    //
+    //return cycle_dict;
 }
 
 app.listen(port, () => {
