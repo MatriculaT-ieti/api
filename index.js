@@ -7,6 +7,7 @@ var MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://admin:DbLv98QyYq6hawu@cluster0.dzgdm.mongodb.net?retryWrites=true&w=majority";
 var item = "";
 var secretkey = "";
+var cycle = [];
 
 app.use(cors());
 
@@ -80,9 +81,31 @@ async function upgradeUser(req, res, token) {
 async function importCicle(req, res) {
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const db = client.db('matricula');
-    item = await db.collection('cycles').findOne({ nom_cicle: "Preimpressió digital" });
+    item = await db.collection('cycles').find({ codi_cicle: req.query.codi_cicle }).toArray();
 
-    console.log(item);
+    for (let i = 0; i < item.length; i++) {
+        cycle.push(item[i].nom_cicle);
+        cycle.push(item[i].nom_modul);
+        cycle.push(item[i].nom_unitat_formativa);
+    }
+
+    cycle = onlyUnique(cycle);
+    res.send(cycle);
+}
+
+//check items repeated in array cycle
+function onlyUnique(cycle) {
+    const unique = [];
+
+    for (var i = 0; i < cycle.length; i++) {
+        const elemento = cycle[i];
+
+        if (!unique.includes(cycle[i])) {
+            unique.push(elemento);
+        }
+    }
+
+    return unique;
 }
 
 app.listen(port, () => {
