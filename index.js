@@ -90,7 +90,8 @@ async function importCicle(req, res) {
     }
 
     cycle = onlyUnique(cycle);
-    res.send(cycle);
+    cycle = transformArrayToDict(cycle);
+    res.send(JSON.stringify(cycle));
 }
 
 //check items repeated in array cycle
@@ -106,6 +107,42 @@ function onlyUnique(cycle) {
     }
 
     return unique;
+}
+
+//
+function transformArrayToDict(cycle) {
+    var cont = 1;
+    const cycle_dict = {
+
+    };
+
+    cycle_dict["nom_cicle"] = cycle[0];
+
+    for (var i = 1; i < cycle.length; i++) {
+        if (cycle[i].charAt(0) == 'M' && cycle[i].charAt(1) == 'P') {
+            var module = cycle[i];
+
+            const nameKeyModule = "modul" + cont;
+            cycle_dict[nameKeyModule] = module;
+
+            var unitys = [];
+            for (let j = i + 1; j < cycle.length; j++) {
+                if (cycle[j].charAt(0) == "U" && cycle[j].charAt(1) == "F") {
+                    unitys.push(cycle[j]);
+                } else {
+                    cont += 1;
+                    break;
+                }
+            }
+
+            cycle_dict[cycle_dict[nameKeyModule]] = unitys;
+        }
+    }
+
+    console.log(cycle_dict[cycle_dict["modul1"]]);
+    console.log(cycle_dict);
+
+    return cycle_dict;
 }
 
 app.listen(port, () => {
