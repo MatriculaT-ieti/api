@@ -27,6 +27,10 @@ app.get('/cicle', (req, res) => {
     importCicle(req, res);
 });
 
+app.get('/import', (req, res) => {
+    importCycle(req, res);
+});
+
 async function queryUsers(req, res) {
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const db = client.db('matricula');
@@ -81,17 +85,21 @@ async function upgradeUser(req, res, token) {
 async function importCicle(req, res) {
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const db = client.db('matricula');
-    item = await db.collection('cycles').find({ codi_cicle: req.query.codi_cicle }).toArray();
+    item = await db.collection('cycles').find({ codi_cicle_formatiu: req.query.codi_cicle_formatiu }).toArray();
 
-    for (let i = 0; i < item.length; i++) {
-        cycle.push(item[i].nom_cicle);
-        cycle.push(item[i].nom_modul);
-        cycle.push(item[i].nom_unitat_formativa);
+    if (item == undefined || item == null || item == "") {
+        res.send("CICLO NO ENCONTRADO")
+    } else {
+        for (let i = 0; i < item.length; i++) {
+            cycle.push(item[i].nom_cicle_formatiu);
+            cycle.push(item[i].nom_modul);
+            cycle.push(item[i].nom_unitat_formativa);
+        }
+
+        cycle = onlyUnique(cycle);
+        cycle = transformArrayToDict(cycle);
+        res.send(JSON.stringify(cycle));
     }
-
-    cycle = onlyUnique(cycle);
-    cycle = transformArrayToDict(cycle);
-    res.send(JSON.stringify(cycle));
 }
 
 //check items repeated in array cycle
@@ -139,37 +147,46 @@ function transformArrayToDict(cycle) {
         }
     }
 
-    console.log(cycle_dict[cycle_dict["modul1"]]);
+
     console.log(cycle_dict);
 
     return cycle_dict;
+}
 
-    //const cycle_dict = {
-    //
-    //};
-    //
-    //cycle_dict["nom_cicle"] = cycle[0];
-    //
-    //for (var i = 1; i < cycle.length; i++) {
-    //    if (cycle[i].charAt(0) == 'M' && cycle[i].charAt(1) == 'P') {
-    //        var module = cycle[i];
-    //
-    //        var unitys = [];
-    //        for (let j = i + 1; j < cycle.length; j++) {
-    //            if (cycle[j].charAt(0) == "U" && cycle[j].charAt(1) == "F") {
-    //                unitys.push(cycle[j]);
-    //            } else {
-    //                break;
-    //            }
-    //        }
-    //
-    //        cycle_dict[module] = unitys;
-    //    }
-    //}
-    //
-    //console.log(cycle_dict);
-    //
-    //return cycle_dict;
+function importCycle(req, res) {
+    var JSONcycles = convertCSVToJSON(res);
+}
+
+function convertCSVToJSON(res) {
+
+    // require csvtojson module
+    const CSVToJSON = require('csvtojson');
+
+    var cycle = "";
+    // convert cycle.csv file to JSON array
+    (async() => {
+        try {
+            cycle = await CSVToJSON().fromFile('/home/super/Baixades/Taules_cataleg_FP_18-19-LOE.csv');
+
+            importMongoDB(res, cycle);
+
+        } catch (err) {
+            console.log(err);
+        }
+    })();
+}
+
+async function importMongoDB(res, cycle) {
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const db = client.db('matricula');
+
+    for (var i = 0; i < cycle.length; i++) {
+        var newCycle = cycle[i];
+        await db.collection("cycles").insertOne(newCycle, function(err, res) {
+            if (err) throw err;
+            console.log(i + " document updated");
+        });
+    }
 }
 
 app.listen(port, () => {
