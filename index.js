@@ -92,8 +92,8 @@ function convertCSVToJSON(res) {
     (async() => {
         try {
             cycle = await CSVToJSON().fromFile('/home/super/Baixades/Taules_cataleg_FP_18-19-LOE.csv');
-            tractarJSON(cycle);
-            console.log(cycle);
+            dealJSON(res, cycle);
+            //console.log(cycle);
             //importMongoDB(res, cycle);
 
         } catch (err) {
@@ -102,53 +102,101 @@ function convertCSVToJSON(res) {
     })();
 }
 
-function tractarJSON(cycle) {
-    nameCycle = {
-        codi_cicle_formatiu: 'CFPM    AF21',
-        nom_cicle_formatiu: 'Impressió gràfica (converting)',
-        codi_adaptacio_curricular: '21',
-        hores_cicle_formatiu: '2000',
-        data_inici_cicle_formatiu: '14/11/13',
-        data_fi_cicle_formatiu: '',
-        codi_modul: 'AF21008',
-        nom_modul: 'MP8. Processos de laminat',
-        durada_min_modul: '165',
-        durada_max_modul: '165',
-        data_inici_modul: '',
-        data_fi_modul: '26/08/16',
-        codi_unitat_formativa: 'AF2100801',
-        nom_unitat_formativa: "UF1. Preparació d'equips i materials pel procés de laminat",
-        durada_unitat_formativa: '25',
-        indicador_fct: 'N',
-        indicador_sintesis: 'N',
-        indicador_idioma: 'N',
-        indicador_projecte: 'N'
-    };
+function dealJSON(res, cycle) {
+    arrayCycles = [];
+    nameCycle = {};
 
     for (var i = 0; i < cycle.length; i++) {
+        const codi_cicle = cycle[i]['codi_cicle_formatiu'];
         const cicle = cycle[i]['nom_cicle_formatiu'];
+        const codi_adaptacio_curricular = cycle[i]['codi_adaptacio_curricular'];
+        const hores_cicle_formatiu = cycle[i]['hores_cicle_formatiu'];
+        const data_inici_cicle_formatiu = cycle[i]['data_inici_cicle_formatiu'];
+        const data_fi_cicle_formatiu = cycle[i]['data_fi_cicle_formatiu'];
+        const codi_modul = cycle[i]['codi_modul'];
         const module = cycle[i]['nom_modul'];
+        const durada_min_modul = cycle[i]['durada_min_modul'];
+        const durada_max_modul = cycle[i]['durada_max_modul'];
+        const data_inici_modul = cycle[i]['data_inici_modul'];
+        const data_fi_modul = cycle[i]['data_fi_modul'];
+        const codi_unitat_formativa = cycle[i]['codi_unitat_formativa'];
         const unitat = cycle[i]['nom_unitat_formativa'];
+        const durada_unitat_formativa = cycle[i]['durada_unitat_formativa'];
+        const indicador_fct = cycle[i]['indicador_fct'];
+        const indicador_sintesis = cycle[i]['indicador_sintesis'];
+        const indicador_idioma = cycle[i]['indicador_idioma'];
+        const indicador_projecte = cycle[i]['indicador_projecte'];
 
-        if (nameCycle[cicle] == undefined) {
+        //in case the cycle is not, we take its name, module and training unit
+        if (nameCycle[codi_cicle] == undefined) {
+            newUnitat = {
+                "codi_unitat_formativa": codi_unitat_formativa,
+                "nom_unitat_formativa": unitat,
+                "durada_unitat_formativa": durada_unitat_formativa,
+                "indicador_fct": indicador_fct,
+                "indicador_sintesis": indicador_sintesis,
+                "indicador_idioma": indicador_idioma,
+                "indicador_projecte": indicador_projecte
+            }
             modules = {};
-            unitats = [unitat];
-            modules[module] = unitats;
-            nameCycle[cicle] = modules;
-        } else {
-            modules = nameCycle[cicle];
-            if (modules[module] == undefined) {
-                unitats = [];
-                unitats.push(unitat);
-                modules[module] = unitats;
-                nameCycle[cicle] = modules;
-            } else {
-                nameCycle[cicle][module].push(unitat);
+            modules[codi_modul] = {
+                "codi_modul": codi_modul,
+                "nom_modul": module,
+                "unitats": [newUnitat],
+                "durada_min_modul": durada_min_modul,
+                "durada_max_modul": durada_max_modul,
+                "data_inici_modul": data_inici_modul,
+                "data_fi_modul": data_fi_modul
+            };
+            nameCycle[codi_cicle] = {
+                "codi_cicle_formatiu": codi_cicle,
+                "nom_cicle_formatiu": cicle,
+                "moduls": modules,
+                "codi_adaptacio_curricular": codi_adaptacio_curricular,
+                "hores_cicle_formatiu": hores_cicle_formatiu,
+                "data_inici_cicle_formatiu": data_inici_cicle_formatiu,
+                "data_fi_cicle_formatiu": data_fi_cicle_formatiu
+            };
+        } else { //in case the cycle exists, and the module does not exist, we will take the module and unit and add it
+            modules = nameCycle[codi_cicle]["moduls"];
+            if (modules[codi_modul] == undefined) {
+                newUnitat = {
+                    "codi_unitat_formativa": codi_unitat_formativa,
+                    "nom_unitat_formativa": unitat,
+                    "durada_unitat_formativa": durada_unitat_formativa,
+                    "indicador_fct": indicador_fct,
+                    "indicador_sintesis": indicador_sintesis,
+                    "indicador_idioma": indicador_idioma,
+                    "indicador_projecte": indicador_projecte
+                };
+                modules[codi_modul] = {
+                    "codi_modul": codi_modul,
+                    "nom_modul": module,
+                    "unitats": [newUnitat],
+                    "durada_min_modul": durada_min_modul,
+                    "durada_max_modul": durada_max_modul,
+                    "data_inici_modul": data_inici_modul,
+                    "data_fi_modul": data_fi_modul
+                };
+
+                nameCycle[codi_cicle]["moduls"] = modules;
+            } else { // and if there is the cycle i the module, i the unit not, we will update the unit
+                newUnitat = {
+                    "codi_unitat_formativa": codi_unitat_formativa,
+                    "nom_unitat_formativa": unitat,
+                    "durada_unitat_formativa": durada_unitat_formativa,
+                    "indicador_fct": indicador_fct,
+                    "indicador_sintesis": indicador_sintesis,
+                    "indicador_idioma": indicador_idioma,
+                    "indicador_projecte": indicador_projecte
+                };
+                nameCycle[codi_cicle]["moduls"][codi_modul]["unitats"].push(newUnitat);
             }
         }
     }
 
     console.log(nameCycle);
+    res.send(nameCycle);
 }
 
 async function importMongoDB(res, cycle) {
