@@ -1,43 +1,50 @@
 const express = require('express')
 const jwt = require('jsonwebtoken');
-const app = express()
-var cors = require('cors')
-const port = process.env.PORT || 5000
-var MongoClient = require('mongodb').MongoClient;
+const app = express();
+const port = process.env.PORT || 5000;
 const uri = "mongodb+srv://admin:DbLv98QyYq6hawu@cluster0.dzgdm.mongodb.net?retryWrites=true&w=majority";
-var item = "";
+
+var MongoClient = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectId; 
+var cors = require('cors');
+var item = {};
 var secretkey = "";
 
 app.use(cors());
 
+// Default:
 app.get('/', (req, res) => {
-   res.json({status: 'ok' , inspirational_message: 'if you can read this, something powerful is going on in this API.'})
+    res.json({status: 'ok' , inspirational_message: 'if you can read this, something powerful is going on in this API.'})
 });
 
-app.get('/users', (req, res) => {
+// Login: 
+app.get('/api/login/students', (req, res) => {
     queryUsers(req, res);
 });
 
-app.get('/admins', (req, res) => {
+app.get('/api/login/admins', (req, res) => {
     queryUsers(req, res);
+});
+
+// CRUD cycles:
+app.get('/api/db/cycles/read', (req, res) => {
+    readCycles(req, res);
 });
 
 async function queryUsers(req, res) {
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const db = client.db('matricula');
-    item = await db.collection('users').findOne({ email: req.query.email });
-    if (item == "" || item == null || item == undefined) {
+    item = await db.collection('users').findOne({ email: req.query.email , password: req.query.password});
+    if (item == "" || item == null || item == undefined) { 
         console.log("ERROR IN GET ITEM");
+        res.send({token: null});
     } else {
         var token = createToken(req, res);
-        if (token == "" || token == null || token == undefined) {
-            console.log("ERROR IN TOKEN");
-        } else {
-            item.token = token;
-            console.log(item);
-            upgradeUser(req, res, token);
-            res.send(item);
-        }
+        
+        item.token = token;
+        console.log(item);
+        upgradeUser(req, res, token);
+        res.send(item);
     }
 
     client.close();
@@ -55,8 +62,8 @@ function createToken(req, res) {
 
     res.send({
         token
-    })
-    return token
+    });
+    return token;
 }
 
 async function upgradeUser(req, res, token) {
@@ -71,6 +78,44 @@ async function upgradeUser(req, res, token) {
     });
 
     //await db.collection('users').updateOne({email : req.query.email}, item);
+}
+
+async function readCycles(req, res, token) {
+    try {
+        item = {status: 'warning' , description: 'we did not find anything...'};
+        const client = await MongoClient.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true});
+        const db = client.db('matricula');
+
+        // Id parameter
+        if (req.query.id != null || req.query.id != undefined) {
+            item = await db.collection('cycles').findOne({"_id": ObjectId(req.query.id)});
+        // Range parameter
+        } else if (req.query.range != null || req.query.range != undefined) {
+            if (Object.keys(JSON.parse(req.query.range))[0] === "from" && Object.keys(JSON.parse(req.query.range))[1] === "to") {
+                let from = JSON.parse(req.query.range).from;
+                let to = JSON.parse(req.query.range).to;
+
+                if (from < to && from >= 0) {
+                    to -= from;
+                    item = db.collection('cycles').find().skip(from).limit(to);
+                    item = item.toArray();
+                }
+            }
+        // Filter parameter
+        } else if (req.query.filter != "" && req.query.filter != undefined) {
+            item = db.collection('cycles').find(JSON.parse(req.query.filter));
+            item = item.toArray();
+
+            if (Object.keys(item).length < 0) {
+                item = {status: 'warning' , description: 'we did not find anything...'};
+            }
+        }
+        res.send(await item);
+    } catch (error) {
+        console.log("Something went wrong...");
+        console.log(error);
+        res.send({status: 'error' , description: 'something went wrong...'})
+    }
 }
 
 app.listen(port, () => {
