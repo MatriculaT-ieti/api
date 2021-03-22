@@ -198,8 +198,9 @@ Para borrar un documento existente en la base de datos (<b>Delete</b>):
     <td>Selects a range of documents ordered by an internal id</td>
     <td>Yes</td>
   </tr>
+ </table>
   
-  Para importar un documento csv existente en la base de datos (<b>Import</b>):
+Para importar un documento csv existente en la base de datos (<b>Import</b>):
 <table>
   <tr>
     <th colspan="4" >Response: JSON</th>
