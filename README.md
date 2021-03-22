@@ -215,9 +215,9 @@ Para importar un documento csv existente en la base de datos (<b>Import</b>):
     <th>Required</th>
   </tr>
   <tr>
-    <td>Id</td>
-    <td>Integer</td>
-    <td>Selects only one document. If this id is present <br/> the <b>Range</b> parameter will be ignored. If id </td>
+    <td>File</td>
+    <td>File</td>
+    <td>the path of your <b> CSV </b> file</td>
     <td>Yes</td>
   </tr>
 </table>
