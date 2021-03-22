@@ -217,7 +217,7 @@ Para importar un documento csv existente en la base de datos (<b>Import</b>):
   <tr>
     <td>File</td>
     <td>File</td>
-    <td>the path of your <b> CSV </b> file</td>
+    <td>The path of your <b> CSV </b> file</td>
     <td>Yes</td>
   </tr>
 </table>
