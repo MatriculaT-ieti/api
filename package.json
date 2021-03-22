@@ -18,6 +18,8 @@
   "homepage": "https://github.com/MatriculaT-ieti/api#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "csvtojson": "^2.0.10",
+    "expres": "0.0.5",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.4"
