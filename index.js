@@ -19,11 +19,11 @@ app.get('/', (req, res) => {
 
 // Login: 
 app.get('/api/login/students', (req, res) => {
-    queryUsers(req, res);
+    queryUsers(req, res, false);
 });
 
 app.get('/api/login/admins', (req, res) => {
-    queryUsers(req, res);
+    queryUsers(req, res, true);
 });
 
 // Import cycles:
@@ -36,10 +36,10 @@ app.get('/api/db/cycles/read', (req, res) => {
     readCycles(req, res);
 });
 
-async function queryUsers(req, res) {
+async function queryUsers(req, res, isAdmin) {
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const db = client.db('matricula');
-    item = await db.collection('users').findOne({ email: req.query.email , password: req.query.password});
+    item = await db.collection('users').findOne({ email: req.query.email , password: req.query.password, isAdmin: isAdmin});
     if (item == "" || item == null || item == undefined) { 
         console.log("ERROR IN GET ITEM");
         res.send({token: null});
