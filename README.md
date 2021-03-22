@@ -200,3 +200,25 @@ Para borrar un documento existente en la base de datos (<b>Delete</b>):
   </tr>
 </table>
 
+Para importar un documento csv existente en la base de datos (<b>Import</b>):
+<table>
+  <tr>
+    <th colspan="4" >Response: JSON</th>
+  </tr>
+  <tr>
+    <th colspan="4" >Get /api/db/cycles/import</th>
+  </tr>
+  <tr>
+    <th>Param</th>
+    <th>Values</th>
+    <th>Description</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+    <td>Id</td>
+    <td>Integer</td>
+    <td>Selects only one document. If this id is present <br/> the <b>Range</b> parameter will be ignored. If id </td>
+    <td>Yes</td>
+  </tr>
+</table>
+
