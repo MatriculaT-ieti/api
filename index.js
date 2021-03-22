@@ -37,33 +37,36 @@ app.get('/api/db/cycles/read', (req, res) => {
 });
 
 async function queryUsers(req, res, isAdmin) {
-    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    const db = client.db('matricula');
-    item = await db.collection('users').findOne({ email: req.query.email , password: req.query.password, isAdmin: isAdmin});
-    if (item == "" || item == null || item == undefined) { 
-        console.log("ERROR IN GET ITEM");
-        res.send({token: null});
-    } else {
-        var token = createToken(req, res);
-        
-        item.token = token;
-        console.log(item);
-        upgradeUser(req, res, token);
-        res.send(item);
-    }
+    try {
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
+        item = await db.collection('users').findOne({ email: req.query.email , password: req.query.password, isAdmin: isAdmin});
+        if (item == "" || item == null || item == undefined) { 
+            res.send({token: null});
+        } else {
+            var token = createToken(req, res);
+            
+            item.token = token;
+            console.log(item);
+            await upgradeUser(req, res, token);
+            res.send(item);
+        }
+    } catch (error) {}
 
-    client.close();
+    
 }
 
-function createToken(res) {
+function createToken(req, res) {
     if (item.isAdmin) {
         secretkey = "admin";
     } else {
         secretkey = "user";
     }
+    item.token = "";
     var token = jwt.sign({ item: item }, secretkey, {
         expiresIn: 60 * 60 * 24 // expires in 24 hours
     })
+
 
     res.send({
         token
@@ -71,7 +74,7 @@ function createToken(res) {
     return token;
 }
 
-async function upgradeUser(req, token) {
+async function upgradeUser(req, res, token) {
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const db = client.db('matricula');
 
