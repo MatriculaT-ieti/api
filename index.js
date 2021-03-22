@@ -23,7 +23,7 @@ app.get('/admins', (req, res) => {
     queryUsers(req, res);
 });
 
-app.get('/import', (req, res) => {
+app.get('/api/db/cycle/import', (req, res) => {
     importCycle(req, res);
 });
 
@@ -142,20 +142,20 @@ function dealJSON(res, cycle) {
             modules[codi_modul] = {
                 "codi_modul": codi_modul,
                 "nom_modul": module,
-                "unitats": [newUnitat],
                 "durada_min_modul": durada_min_modul,
                 "durada_max_modul": durada_max_modul,
                 "data_inici_modul": data_inici_modul,
-                "data_fi_modul": data_fi_modul
+                "data_fi_modul": data_fi_modul,
+                "unitats": [newUnitat]
             };
             nameCycle[codi_cicle] = {
                 "codi_cicle_formatiu": codi_cicle,
                 "nom_cicle_formatiu": cicle,
-                "moduls": modules,
                 "codi_adaptacio_curricular": codi_adaptacio_curricular,
                 "hores_cicle_formatiu": hores_cicle_formatiu,
                 "data_inici_cicle_formatiu": data_inici_cicle_formatiu,
-                "data_fi_cicle_formatiu": data_fi_cicle_formatiu
+                "data_fi_cicle_formatiu": data_fi_cicle_formatiu,
+                "moduls": modules
             };
         } else { //in case the cycle exists, and the module does not exist, we will take the module and unit and add it
             modules = nameCycle[codi_cicle]["moduls"];
@@ -172,11 +172,11 @@ function dealJSON(res, cycle) {
                 modules[codi_modul] = {
                     "codi_modul": codi_modul,
                     "nom_modul": module,
-                    "unitats": [newUnitat],
                     "durada_min_modul": durada_min_modul,
                     "durada_max_modul": durada_max_modul,
                     "data_inici_modul": data_inici_modul,
-                    "data_fi_modul": data_fi_modul
+                    "data_fi_modul": data_fi_modul,
+                    "unitats": [newUnitat]
                 };
 
                 nameCycle[codi_cicle]["moduls"] = modules;
@@ -192,24 +192,25 @@ function dealJSON(res, cycle) {
                 };
                 nameCycle[codi_cicle]["moduls"][codi_modul]["unitats"].push(newUnitat);
             }
+            //console.log(unitat);
         }
     }
 
-    console.log(nameCycle);
-    res.send(nameCycle);
+    //console.log(nameCycle);
+    importMongoDB(res, nameCycle);
 }
 
 async function importMongoDB(res, cycle) {
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const db = client.db('matricula');
 
-    for (var i = 0; i < cycle.length; i++) {
+    Object.keys(cycle).forEach(i => {
         var newCycle = cycle[i];
-        await db.collection("cycles").insertOne(newCycle, function(err, res) {
+        db.collection("cycles").insertOne(newCycle, function(err, res) {
             if (err) throw err;
-            console.log(i + " document updated");
+            console.log(i + " document inserted");
         });
-    }
+    });
 }
 
 app.listen(port, () => {
