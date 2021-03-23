@@ -200,7 +200,7 @@ Para borrar un documento existente en la base de datos (<b>Delete</b>):
   </tr>
  </table>
   
-Para importar un documento csv existente en la base de datos (<b>Import</b>):
+Para importar, transformando a documento JSON, un csv en la base de datos (<b>Import</b>):
 <table>
   <tr>
     <th colspan="4" >Response: JSON</th>
@@ -216,7 +216,7 @@ Para importar un documento csv existente en la base de datos (<b>Import</b>):
   </tr>
   <tr>
     <td>File</td>
-    <td>File</td>
+    <td>JSON</td>
     <td>The path of your <b> CSV </b> file</td>
     <td>Yes</td>
   </tr>
