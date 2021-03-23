@@ -31,7 +31,7 @@ Los siguientes dos endpoints realizan el proceso necesario para el login de usua
     <th colspan="4" >Response: JSON</th>
   </tr>
   <tr>
-    <th colspan="4" >Get /api/login/students{email}</th>
+    <th colspan="4" >Get /api/login/students</th>
   </tr>
   <tr>
     <th>Param</th>
@@ -58,7 +58,7 @@ Los siguientes dos endpoints realizan el proceso necesario para el login de usua
     <th colspan="4" >Response: JSON</th>
   </tr>
   <tr>
-    <th colspan="4" >Get /api/login/admins{email}</th>
+    <th colspan="4" >Get /api/login/admins</th>
   </tr>
   <tr>
     <th>Param</th>
