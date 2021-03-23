@@ -24,7 +24,7 @@ El siguiente endpoint es un test sencillo para comprovar que el servicio de la A
 </table>
 
 #### Login
-Los siguientes dos endpoints realizan el proceso necesario para el login de usuarios y administradores, respectivamente. Dichos endpoints necesitan un email y una password, y nuestra api les acredita un token de acceso con el rol admin o user dependiendo su perfil. En caso de no encontrar el email pasado como parámetro el objeto JSON que se devuelve será nulo.
+Los siguientes dos endpoints realizan el proceso necesario para el login de usuarios y administradores, respectivamente. Dichos endpoints necesitan un email y una password, y nuestra api les acredita un token de acceso con el rol admin o user dependiendo su perfil. En caso de no encontrar un usuario con email y password válido en la base de datos el token del objeto JSON sera nulo.
 
 <table>
   <tr>
