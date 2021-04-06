@@ -138,7 +138,7 @@ async function importEndPoint(req, res) {
     var json = req.body;
 
     console.log(json);
-    //importMongoDB(json);
+    importMongoDB(json);
 }
 
 async function importMongoDB(json) {
