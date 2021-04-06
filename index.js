@@ -127,7 +127,7 @@ async function readCycles(req, res) {
 
 }
 
-function importEndPoint(req, res) {
+async function importEndPoint(req, res) {
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const db = client.db('matricula');
 
