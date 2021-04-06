@@ -30,7 +30,7 @@ app.get('/api/login/admins', (req, res) => {
 });
 
 // Import cycles:
-app.get('/api/db/cycle/import', (req, res) => {
+app.post('/api/db/cycle/import', (req, res) => {
     console.log("XDDDDD");
     importEndPoint(req, res);
 });
