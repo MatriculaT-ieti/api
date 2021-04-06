@@ -6,10 +6,13 @@ const uri = "mongodb+srv://admin:DbLv98QyYq6hawu@cluster0.dzgdm.mongodb.net?retr
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
+var bodyParser = require('body-parser');
 var cors = require('cors');
 var item = {};
 var secretkey = "";
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ limit: '500mb' }));
 app.use(cors());
 
 // Default:
