@@ -364,3 +364,26 @@ Para importar un documento csv existente en la base de datos (<b>Import</b>):
   </tr>
 </table>
 
+#### Endpoint Importar UF's admeses
+Para importar las UF's que esta cursando el alumno en la base de datos (<b>Import</b>):
+<table>
+  <tr>
+    <th colspan="4" >Response: JSON</th>
+  </tr>
+  <tr>
+    <th colspan="4" >Get /api/db/student/import/ufs</th>
+  </tr>
+  <tr>
+    <th>Param</th>
+    <th>Values</th>
+    <th>Description</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+    <td>JSON</td>
+    <td>JSON {cursando: modulos: [unidades:[]]}</td>
+    <td>JSON information</td>
+    <td>Yes</td>
+  </tr>
+</table>
+
