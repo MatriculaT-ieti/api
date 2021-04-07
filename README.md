@@ -381,7 +381,7 @@ Para importar las UF's que esta cursando el alumno en la base de datos (<b>Impor
   </tr>
   <tr>
     <td>JSON</td>
-    <td>JSON {cursando: modulos: [unidades:[]]}</td>
+    <td>JSON {cursando: modulos: [ unidades:[ ] ]}</td>
     <td>JSON information</td>
     <td>Yes</td>
   </tr>
