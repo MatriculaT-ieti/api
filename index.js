@@ -29,16 +29,35 @@ app.get('/api/login/admins', (req, res) => {
     queryUsers(req, res, true);
 });
 
+
+// CRUD cycles:
+//read cycles:
+app.get('/api/db/cycles/read', (req, res) => {
+    readCycles(req, res);
+});
+
 // Import cycles:
 app.post('/api/db/cycle/import', (req, res) => {
     console.log("XDDDDD");
     importEndPoint(req, res);
 });
 
-// CRUD cycles:
-app.get('/api/db/cycles/read', (req, res) => {
-    readCycles(req, res);
+//CRUD students:
+//read students
+app.get('/api/db/student/read', (req, res) => {
+    readStudents(req, res);
 });
+
+//import students
+app.post('/api/db/student/import', (req, res) => {
+    importStudents(req, res);
+})
+
+//import ufs students
+app.get('/api/db/student/import/ufs', (req, res) => {
+    importStudentsUFs(req, res);
+})
+
 
 async function queryUsers(req, res, isAdmin) {
     try {
@@ -137,21 +156,77 @@ async function importEndPoint(req, res) {
 
     var json = req.body;
 
-    console.log(json);
-    importMongoDB(json);
+    importMongoDB(json, "cycles");
 }
 
-async function importMongoDB(json) {
+async function importStudents(req, res) {
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const db = client.db('matricula');
 
+    var json = req.body;
+    importMongoDB(json, "users");
+}
+
+async function importMongoDB(json, collectionBD) {
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const db = client.db('matricula');
     Object.keys(json).forEach(i => {
         var newCycle = json[i];
-        db.collection("cycles").insertOne(newCycle, function(err, res) {
+        db.collection(collectionBD).insertOne(newCycle, function(err, res) {
             if (err) throw err;
-            console.log(i + " document inserted");
+            console.log((i + 1) + " document inserted");
         });
     });
+}
+
+async function readStudents(req, res) {
+    try {
+        item = { status: 'warning', description: 'we did not find anything...' };
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
+
+        // Id parameter
+        if (req.query.cicle_formatiu != null || req.query.cicle_formatiu != undefined) {
+            item = await db.collection('users').find({ 'cicle_formatiu': req.query.cicle_formatiu });
+            item = item.toArray();
+            // Range parameter
+        } else if (req.query.range != null || req.query.range != undefined) {
+            if (Object.keys(JSON.parse(req.query.range))[0] === "from" && Object.keys(JSON.parse(req.query.range))[1] === "to") {
+                let from = JSON.parse(req.query.range).from;
+                let to = JSON.parse(req.query.range).to;
+
+                if (from < to && from >= 0) {
+                    to -= from;
+                    item = db.collection('users').find().skip(from).limit(to);
+                    item = item.toArray();
+                }
+            }
+            // Filter parameter
+        } else if (req.query.filter != "" && req.query.filter != undefined) {
+            item = db.collection('users').find(JSON.parse(req.query.filter));
+            item = item.toArray();
+
+            if (Object.keys(item).length < 0) {
+                item = { status: 'warning', description: 'we did not find anything...' };
+            }
+        }
+        res.send(await item);
+    } catch (error) {
+        console.log("Something went wrong...");
+        console.log(error);
+        res.send({ status: 'error', description: 'something went wrong...' })
+    }
+
+}
+
+function importStudentsUFs(req, res) {
+    var json = req.query.json;
+
+    if (json == null || json == undefined || json == "") {
+        res.send('JSON IS VOID');
+    } else {
+
+    }
 }
 
 app.listen(port, () => {
