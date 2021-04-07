@@ -219,13 +219,24 @@ async function readStudents(req, res) {
 
 }
 
-function importStudentsUFs(req, res) {
+async function importStudentsUFs(req, res) {
+    var email = req.query.email;
     var json = req.query.json;
 
-    if (json == null || json == undefined || json == "") {
-        res.send('JSON IS VOID');
+    if (json == null || json == undefined || json == "" || email == null || email == undefined || email == "") {
+        res.send('JSON OR EMAIL IS VOID');
     } else {
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
 
+        var myquery = { email: email };
+        var newvalues = { $set: { cursando: json } };
+        await db.collection("users").updateOne(myquery, newvalues, function(err, res) {
+            if (err) throw err;
+            console.log('1 document Update');
+        });
+
+        res.send('User with email ' + email + ' has been updated');
     }
 }
 
