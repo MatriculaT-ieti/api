@@ -236,7 +236,7 @@ Para añadir documentos a la colección (<b>Create</b>):
     <th colspan="4" >Response: JSON</th>
   </tr>
   <tr>
-    <th colspan="4" >Get /api/db/cycles/create</th>
+    <th colspan="4" >Get /api/db/student/create</th>
   </tr>
   <tr>
     <th>Param</th>
@@ -258,7 +258,7 @@ Para obtener datos de la colección en formato JSON (<b>Read</b>):
     <th colspan="4" >Response: JSON</th>
   </tr>
   <tr>
-    <th colspan="4" >Get /api/db/cycles/read</th>
+    <th colspan="4" >Get /api/db/student/read</th>
   </tr>
   <tr>
     <th>Param</th>
@@ -267,7 +267,7 @@ Para obtener datos de la colección en formato JSON (<b>Read</b>):
     <th>Required</th>
   </tr>
   <tr>
-    <td>Id</td>
+    <td>Codi_cicle_formatiu</td>
     <td>Integer</td>
     <td>Selects only one document. If this Id is present <br/> the <b>Range</b> parameter will be ignored.</td>
     <td>Yes</td>
@@ -292,7 +292,7 @@ Para actualizar un documento ya existente en la base de datos (<b>Update</b>):
     <th colspan="4" >Response: JSON</th>
   </tr>
   <tr>
-    <th colspan="4" >Get /api/db/cycles/update</th>
+    <th colspan="4" >Get /api/db/student/update</th>
   </tr>
   <tr>
     <th>Param</th>
@@ -320,7 +320,7 @@ Para borrar un documento existente en la base de datos (<b>Delete</b>):
     <th colspan="4" >Response: JSON</th>
   </tr>
   <tr>
-    <th colspan="4" >Get /api/db/cycles/delete</th>
+    <th colspan="4" >Get /api/db/student/delete</th>
   </tr>
   <tr>
     <th>Param</th>
