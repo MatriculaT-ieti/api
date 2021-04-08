@@ -396,8 +396,8 @@ Para importar las UF's que esta cursando el alumno en la base de datos (<b>Impor
 #### CR Requeriments
 
 Los siguientes 2 endpoints realizan el proceso que le corresponde en la colección especificada (Create, Read, Update, Delete):
-- `Get /api/db/student/create` permite añadir nuevos documentos a la base de datos. 
-- `Get /api/db/student/read` permite obtener diferentes documentos de la base de datos. 
+- `Get /api/db/requirements/create` permite añadir nuevos documentos a la base de datos. 
+- `Get /api/db/requirements/read` permite obtener diferentes documentos de la base de datos. 
 
 Para añadir documentos a la colección (<b>Create</b>):
 <table>
