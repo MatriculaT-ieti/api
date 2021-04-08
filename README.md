@@ -393,3 +393,52 @@ Para importar las UF's que esta cursando el alumno en la base de datos (<b>Impor
   </tr>
 </table>
 
+#### CR Requeriments
+
+Los siguientes 2 endpoints realizan el proceso que le corresponde en la colección especificada (Create, Read, Update, Delete):
+- `Get /api/db/student/create` permite añadir nuevos documentos a la base de datos. 
+- `Get /api/db/student/read` permite obtener diferentes documentos de la base de datos. 
+
+Para añadir documentos a la colección (<b>Create</b>):
+<table>
+  <tr>
+    <th colspan="4" >Response: JSON</th>
+  </tr>
+  <tr>
+    <th colspan="4" >Get /api/db/requirements/create</th>
+  </tr>
+  <tr>
+    <th>Param</th>
+    <th>Values</th>
+    <th>Description</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+    <td>Document</td>
+    <td>JSON {field: value, ...}</td>
+    <td>Adds the document passed as a parameter. Only one <br/>document can be inserted at a time.</td>
+    <td>Yes</td>
+  </tr>
+</table>
+
+Para obtener datos de la colección en formato JSON (<b>Read</b>):
+<table>
+  <tr>
+    <th colspan="4" >Response: JSON</th>
+  </tr>
+  <tr>
+    <th colspan="4" >Get /api/db/requirements/read</th>
+  </tr>
+  <tr>
+    <th>Param</th>
+    <th>Values</th>
+    <th>Description</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+    <td>DNI</td>
+    <td>String</td>
+    <td>Selects only one document.</td>
+    <td>Yes</td>
+  </tr>
+</table>
