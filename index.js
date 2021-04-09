@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var item = {};
 var secretkey = "";
+var Schema = mongoose.Schema;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({ limit: '500mb' }));
@@ -56,6 +57,11 @@ app.post('/api/db/student/import', (req, res) => {
 //import ufs students
 app.get('/api/db/student/import/ufs', (req, res) => {
     importStudentsUFs(req, res);
+})
+
+//upload photos students
+app.get('/api/db/student/upload', (req, res) => {
+    uploadPhoto(req, res);
 })
 
 
@@ -238,6 +244,14 @@ async function importStudentsUFs(req, res) {
 
         res.send('User with email ' + email + ' has been updated');
     }
+}
+
+const imageSchema = Schema({
+
+})
+
+function uploadPhoto(res, req) {
+
 }
 
 app.listen(port, () => {
