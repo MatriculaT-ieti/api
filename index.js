@@ -61,19 +61,19 @@ app.get('/api/db/student/import/ufs', (req, res) => {
     importStudentsUFs(req, res);
 })
 
-//upload photos students
+//upload photos students:
 app.get('/api/db/student/upload', (req, res) => {
     uploadPhoto(req, res);
 
 })
 
-//download image
+//download image:
 app.get('/api/db/student/read/image', (req, res) => {
     readImage(req, res);
 })
 
-//CR REQUIRMENTS
-app.get('/api/db/stuends/read/requirmentsprofile', (req, res) => {
+//read requirementsprofile:
+app.get('/api/db/requirmentsprofile/read', (req, res) => {
     readRequirmentsProfile(req, res);
 })
 
