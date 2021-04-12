@@ -1,3 +1,6 @@
+//npm install express
+//npm install mongoose
+
 const express = require('express')
 const jwt = require('jsonwebtoken');
 const app = express();
@@ -10,6 +13,7 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var item = {};
 var secretkey = "";
+const fs = require("fs");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({ limit: '500mb' }));
@@ -55,6 +59,22 @@ app.post('/api/db/student/import', (req, res) => {
 //import ufs students:
 app.get('/api/db/student/import/ufs', (req, res) => {
     importStudentsUFs(req, res);
+})
+
+//upload photos students
+app.get('/api/db/student/upload', (req, res) => {
+    uploadPhoto(req, res);
+
+})
+
+//download image
+app.get('/api/db/student/read/image', (req, res) => {
+    readImage(req, res);
+})
+
+//CR REQUIRMENTS
+app.get('/api/db/stuends/read/requirmentsprofile', (req, res) => {
+    readRequirmentsProfile(req, res);
 })
 
 
@@ -164,6 +184,43 @@ async function importStudents(req, res) {
     importMongoDB(json, "users");
 }
 
+async function uploadPhoto(req, res) {
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const db = client.db('matricula');
+
+    var json = req.body;
+
+    importMongoDB(json, "prubea");
+}
+
+async function readImage(req, res) {
+    try {
+        item = { status: 'warning', description: 'we did not find anything...' };
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
+
+        // Id parameter
+        if (req.query.email != null || req.query.email != undefined) {
+            item = await db.collection('prueba').findOne({ "email": req.query.email });
+        }
+
+        convertingBase64toImage(item.image, res);
+
+    } catch (error) {
+        console.log("Something went wrong...");
+        console.log(error);
+        res.send({ status: 'error', description: 'something went wrong...' })
+    }
+}
+
+function convertingBase64toImage(src, res) {
+    let buff = new Buffer(src, 'base64');
+    let img = buff.toString('ascii');
+    const base64 = fs.readFileSync(img, "base64");
+    const buffer = Buffer.from(base64, "base64");
+    res.send(buffer);
+}
+
 async function importMongoDB(json, collectionBD) {
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const db = client.db('matricula');
@@ -234,6 +291,22 @@ async function importStudentsUFs(req, res) {
         });
 
         res.send('User with email ' + email + ' has been updated');
+    }
+}
+
+async function readRequirmentsProfile(req, res) {
+    try {
+        item = { status: 'warning', description: 'we did not find anything...' };
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
+
+        item = await db.collection('requirement_profile').find({});
+        item = item.toArray();
+        res.send(await item);
+    } catch (error) {
+        console.log("Something went wrong...");
+        console.log(error);
+        res.send({ status: 'error', description: 'something went wrong...' })
     }
 }
 
