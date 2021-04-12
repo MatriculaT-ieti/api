@@ -72,6 +72,11 @@ app.get('/api/db/student/read/image', (req, res) => {
     readImage(req, res);
 })
 
+//CR REQUIRMENTS
+app.get('/api/db/stuends/read/requirmentsprofile', (req, res) => {
+    readRequirmentsProfile(req, res);
+})
+
 
 async function queryUsers(req, res, isAdmin) {
     try {
@@ -288,6 +293,22 @@ async function importStudentsUFs(req, res) {
         });
 
         res.send('User with email ' + email + ' has been updated');
+    }
+}
+
+async function readRequirmentsProfile(req, res) {
+    try {
+        item = { status: 'warning', description: 'we did not find anything...' };
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
+
+        item = await db.collection('requirement_profile').find({});
+        item = item.toArray();
+        res.send(await item);
+    } catch (error) {
+        console.log("Something went wrong...");
+        console.log(error);
+        res.send({ status: 'error', description: 'something went wrong...' })
     }
 }
 
