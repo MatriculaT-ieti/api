@@ -187,12 +187,33 @@ async function importStudents(req, res) {
 }
 
 async function uploadPhoto(req, res) {
-    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    const db = client.db('matricula');
+    try {
+        item = { status: 'warning', description: 'we did not find anything...' };
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
 
-    var json = req.body;
+        // Id parameter
+        if (req.query.dni != null || req.query.dni != undefined || req.query.photo != null || req.query.photo != undefined) {
+            item = await db.collection('requirements').findOne({ "dni": req.query.dni });
+            var photos = item.photos;
+            photos.push(req.query.photo);
 
-    importMongoDB(json, "prubea");
+            var myquery = { dni: req.query.dni };
+            var newvalues = { $set: { photos: photos } };
+            await db.collection("requirements").updateOne(myquery, newvalues, function(err, res) {
+                if (err) throw err;
+                console.log("1 document updated");
+            });
+        }
+
+        res.send(photos);
+        //convertingBase64toImage(item.image, res);
+
+    } catch (error) {
+        console.log("Something went wrong...");
+        console.log(error);
+        res.send({ status: 'error', description: 'something went wrong...' })
+    }
 }
 
 async function readImage(req, res) {
