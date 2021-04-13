@@ -251,6 +251,7 @@ function convertingBase64toImage(src, res) {
 async function importMongoDB(json, collectionBD) {
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const db = client.db('matricula');
+    console.log(json);
     Object.keys(json).forEach(i => {
         var newCycle = json[i];
         db.collection(collectionBD).insertOne(newCycle, function(err, res) {
