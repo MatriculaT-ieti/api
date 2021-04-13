@@ -46,6 +46,11 @@ app.post('/api/db/cycle/import', (req, res) => {
 });
 
 //CRUD students:
+//create students:
+app.get('/api/db/student/read', (req, res) => {
+    createStudent(req, res);
+});
+
 //read students:
 app.get('/api/db/student/read', (req, res) => {
     readStudents(req, res);
@@ -343,8 +348,15 @@ async function createRequirment(req, res) {
     const db = client.db('matricula');
 
     var json = req.body;
-    console.log(json)
     importMongoDB(json, "requirement_profile");
+}
+
+async function createStudent(req, res) {
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const db = client.db('matricula');
+
+    var json = req.body;
+    importMongoDB(json, "users");
 }
 
 app.listen(port, () => {
