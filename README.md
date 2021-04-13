@@ -395,7 +395,7 @@ Para importar las UF's que esta cursando el alumno en la base de datos (<b>Impor
 
 #### CR Requeriments
 
-Los siguientes 2 endpoints realizan el proceso que le corresponde en la colección especificada (Create, Read, Update, Delete):
+Los siguientes 2 endpoints realizan el proceso que le corresponde en la colección especificada (Create, Read):
 - `Get /api/db/requirements/create` permite añadir nuevos documentos a la base de datos. 
 - `Get /api/db/requirements/read` permite obtener diferentes documentos de la base de datos. 
 
@@ -428,17 +428,5 @@ Para obtener datos de la colección en formato JSON (<b>Read</b>):
   </tr>
   <tr>
     <th colspan="4" >Get /api/db/requirements/read</th>
-  </tr>
-  <tr>
-    <th>Param</th>
-    <th>Values</th>
-    <th>Description</th>
-    <th>Required</th>
-  </tr>
-  <tr>
-    <td>DNI</td>
-    <td>String</td>
-    <td>Selects only one document.</td>
-    <td>Yes</td>
   </tr>
 </table>
