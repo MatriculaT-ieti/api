@@ -46,38 +46,34 @@ app.post('/api/db/cycle/import', (req, res) => {
 });
 
 //CRUD students:
-//read students
+//read students:
 app.get('/api/db/student/read', (req, res) => {
     readStudents(req, res);
 });
 
-//import students
+//import students:
 app.post('/api/db/student/import', (req, res) => {
     importStudents(req, res);
 })
 
-//import ufs students
+//import ufs students:
 app.get('/api/db/student/import/ufs', (req, res) => {
     importStudentsUFs(req, res);
 })
 
-//upload photos students
+//upload photos students:
 app.get('/api/db/student/upload', (req, res) => {
     uploadPhoto(req, res);
 
 })
 
-//download image
+//download image:
 app.get('/api/db/student/read/image', (req, res) => {
     readImage(req, res);
 })
 
-//CR REQUIRMENTS
-app.post('/api/db/stuends/create/requirmentsprofile', (req, res) => {
-    createRequirment(req, res);
-})
-
-app.get('/api/db/stuends/read/requirmentsprofile', (req, res) => {
+//read requirementsprofile:
+app.get('/api/db/requirmentsprofile/read', (req, res) => {
     readRequirmentsProfile(req, res);
 })
 
@@ -99,7 +95,6 @@ async function queryUsers(req, res, isAdmin) {
         }
     } catch (error) {}
 
-
 }
 
 function createToken(req, res) {
@@ -112,7 +107,6 @@ function createToken(req, res) {
     var token = jwt.sign({ item: item }, secretkey, {
         expiresIn: 60 * 60 * 24 // expires in 24 hours
     })
-
 
     res.send({
         token
@@ -305,7 +299,7 @@ async function importStudentsUFs(req, res) {
     var json = req.query.json;
 
     if (json == null || json == undefined || json == "" || email == null || email == undefined || email == "") {
-        res.send('JSON OR EMAIL IS VOID');
+        res.send('json or email field empty');
     } else {
         const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
         const db = client.db('matricula');
@@ -314,7 +308,7 @@ async function importStudentsUFs(req, res) {
         var newvalues = { $set: { cursando: json } };
         await db.collection("users").updateOne(myquery, newvalues, function(err, res) {
             if (err) throw err;
-            console.log('1 document Update');
+            console.log('1 document updated');
         });
 
         res.send('User with email ' + email + ' has been updated');
