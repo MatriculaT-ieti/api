@@ -267,7 +267,7 @@ Para obtener datos de la colección en formato JSON (<b>Read</b>):
     <th>Required</th>
   </tr>
   <tr>
-    <td>Codi_cicle_formatiu</td>
+    <td>cicle_formatiu</td>
     <td>String</td>
     <td>Selects only one document. If this Id is present <br/> the <b>Range</b> parameter will be ignored.</td>
     <td>Yes</td>
