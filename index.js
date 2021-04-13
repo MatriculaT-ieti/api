@@ -74,7 +74,7 @@ app.get('/api/db/student/read/image', (req, res) => {
 
 //CR requirements
 //read requirementsprofile:
-app.get('/api/db/requirmentsprofile/create', (req, res) => {
+app.post('/api/db/requirmentsprofile/create', (req, res) => {
     createRequirment(req, res);
 })
 
