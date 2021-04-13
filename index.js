@@ -47,7 +47,7 @@ app.post('/api/db/cycle/import', (req, res) => {
 
 //CRUD students:
 //create students:
-app.get('/api/db/student/create', (req, res) => {
+app.post('/api/db/student/create', (req, res) => {
     createStudent(req, res);
 });
 
