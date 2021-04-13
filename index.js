@@ -73,6 +73,10 @@ app.get('/api/db/student/read/image', (req, res) => {
 })
 
 //CR REQUIRMENTS
+app.post('/api/db/stuends/create/requirmentsprofile', (req, res) => {
+    createRequirment(req, res);
+})
+
 app.get('/api/db/stuends/read/requirmentsprofile', (req, res) => {
     readRequirmentsProfile(req, res);
 })
@@ -206,7 +210,7 @@ async function uploadPhoto(req, res) {
             });
         }
 
-        res.send(photos);
+        res.send("SUCCESFULL");
         //convertingBase64toImage(item.image, res);
 
     } catch (error) {
@@ -331,6 +335,15 @@ async function readRequirmentsProfile(req, res) {
         console.log(error);
         res.send({ status: 'error', description: 'something went wrong...' })
     }
+}
+
+async function createRequirment(req, res) {
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const db = client.db('matricula');
+
+    var json = req.body;
+    console.log(json)
+    importMongoDB(json, "requirement_profile");
 }
 
 app.listen(port, () => {
