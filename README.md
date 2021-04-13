@@ -348,7 +348,7 @@ Para importar un documento csv existente en la base de datos (<b>Import</b>):
     <th colspan="4" >Response: JSON</th>
   </tr>
   <tr>
-    <th colspan="4" >Get /api/db/cycles/import</th>
+    <th colspan="4" >Get /api/db/student/import</th>
   </tr>
   <tr>
     <th>Param</th>
