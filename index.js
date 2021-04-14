@@ -223,7 +223,7 @@ async function uploadPhoto(req, res) {
             });
         }
         
-        convertingBase64toImage(Object.keys(photo)[0], res);
+        //convertingBase64toImage(Object.keys(photo)[0], res);
         res.send("SUCCESFULL"); 
 
     } catch (error) {
