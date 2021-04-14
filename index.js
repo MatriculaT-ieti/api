@@ -209,8 +209,7 @@ async function uploadPhoto(req, res) {
         // Id parameter
         if (req.query.dni != null || req.query.dni != undefined ) {
             item = await db.collection('requirements').findOne({ "dni": req.query.dni });
-            var photo = "";
-            photo += req.body;
+            var photo = req.body;
 
             console.log(photo);
             var newPhotos = item.photos;
