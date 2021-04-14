@@ -213,7 +213,7 @@ async function uploadPhoto(req, res) {
 
             console.log(photo);
             var newPhotos = item.photos;
-            newPhotos.push(photo);
+            newPhotos.push(Object.keys(photo)[0]);
 
             var myquery = { dni: req.query.dni };
             var newvalues = { $set: {photos: newPhotos}};
