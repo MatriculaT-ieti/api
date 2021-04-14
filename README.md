@@ -146,7 +146,6 @@ Para obtener datos de la colección en formato JSON (<b>Read</b>):
 
 <table>
   <tr>
-    <td>Filter</td>
     <td>Filter by</td>
     <td>codi_cicle_formatiu, nom_cicle_formatiu</td>
   </tr>
@@ -296,7 +295,6 @@ Para obtener datos de la colección en formato JSON (<b>Read</b>):
 
 <table>
   <tr>
-    <td>Filter</td>
     <td>Filter by</td>
     <td>Convocatoria, Estat_solicitud, Primer Cognom, Segon Cognom, Codi_centre_p1, Nom_centre_p1</td>
   </tr>
