@@ -56,6 +56,11 @@ app.get('/api/db/student/read', (req, res) => {
     readStudents(req, res);
 });
 
+//update students:
+app.get('/api/db/student/update', (req, res) => {
+    updateStudent(req, res);
+});
+
 //import students:
 app.post('/api/db/student/import', (req, res) => {
     importStudents(req, res);
@@ -296,6 +301,12 @@ async function readStudents(req, res) {
             if (Object.keys(item).length < 0) {
                 item = { status: 'warning', description: 'we did not find anything...' };
             }
+        } else if (req.query.email != "" && req.query.email != undefined) {
+            item = await db.collection('users').findOne({ 'Correu electrònic': req.query.email });
+
+            if (item == null) {
+                item = { status: 'warning', description: 'we did not find anything...' };
+            }
         }
         res.send(await item);
     } catch (error) {
@@ -304,6 +315,43 @@ async function readStudents(req, res) {
         res.send({ status: 'error', description: 'something went wrong...' })
     }
 
+}
+
+async function updateStudent(req, res) {
+    try {
+        item = { status: 'warning', description: 'we did not find anything...' };
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
+
+        // Id parameter
+        if (req.query.email != null || req.query.email != undefined || req.query.json != null || req.query.json != undefined) {
+            item = await db.collection('users').findOne({ 'Correu electrònic': req.query.email });
+            var json = JSON.parse(req.query.json);
+            for (var key in json) {
+                for (var keyItem in item) {
+                    if (key == keyItem) {
+                        var updateVal = {};
+                        updateVal[key] = json[key];
+                        var myquery = { 'Correu electrònic': req.query.email };
+                        var newvalues = { $set: updateVal };
+                        await db.collection("users").updateOne(myquery, newvalues, function(err, res) {
+                            if (err) throw err;
+                            console.log(key + ' ' + item.Nom + " document updated");
+                        });
+                    }
+                }
+            }
+
+            if (item == null) {
+                item = { status: 'warning', description: 'we did not find anything...' };
+            }
+        }
+        res.send({ status: 'successful', description: 'User: ' + item.Nom + ' it has been updated' });
+    } catch (error) {
+        console.log("Something went wrong...");
+        console.log(error);
+        res.send({ status: 'error', description: 'something went wrong...' })
+    }
 }
 
 async function importStudentsUFs(req, res) {
