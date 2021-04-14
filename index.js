@@ -72,7 +72,7 @@ app.get('/api/db/student/import/ufs', (req, res) => {
 })
 
 //upload photos students:
-app.get('/api/db/student/upload', (req, res) => {
+app.post('/api/db/student/upload', (req, res) => {
     uploadPhoto(req, res);
 
 })
@@ -207,13 +207,12 @@ async function uploadPhoto(req, res) {
         const db = client.db('matricula');
 
         // Id parameter
-        if (req.query.dni != null || req.query.dni != undefined || req.query.photo != null || req.query.photo != undefined) {
+        if (req.query.dni != null || req.query.dni != undefined ) {
             item = await db.collection('requirements').findOne({ "dni": req.query.dni });
-            var photos = item.photos;
-            photos.push(req.query.photo);
+            var photo = req.body;
 
             var myquery = { dni: req.query.dni };
-            var newvalues = { $set: { photos: photos } };
+            var newvalues = { $set: { photos: photo } };
             await db.collection("requirements").updateOne(myquery, newvalues, function(err, res) {
                 if (err) throw err;
                 console.log("1 document updated");
