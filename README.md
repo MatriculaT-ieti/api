@@ -144,6 +144,15 @@ Para obtener datos de la colección en formato JSON (<b>Read</b>):
   </tr>
 </table>
 
+<table>
+  <tr>
+    <td>Filter</td>
+    <td>JSON {field: filter, ...}</td>
+    <td>Selects a group of documents that matches with the filter</td>
+    <td>No</td>
+  </tr>
+</table>
+
 Para actualizar un documento ya existente en la base de datos (<b>Update</b>):
 <table>
   <tr>
