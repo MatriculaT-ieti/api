@@ -147,9 +147,8 @@ Para obtener datos de la colección en formato JSON (<b>Read</b>):
 <table>
   <tr>
     <td>Filter</td>
-    <td>JSON {field: filter, ...}</td>
-    <td>Selects a group of documents that matches with the filter</td>
-    <td>No</td>
+    <td>Filter by</td>
+    <td>codi_cicle_formatiu, nom_cicle_formatiu</td>
   </tr>
 </table>
 
@@ -292,6 +291,14 @@ Para obtener datos de la colección en formato JSON (<b>Read</b>):
     <td>JSON {field: filter, ...}</td>
     <td>Selects a group of documents that matches with the filter</td>
     <td>No</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td>Filter</td>
+    <td>Filter by</td>
+    <td>Convocatoria, Estat_solicitud, Primer Cognom, Segon Cognom, Codi_centre_p1, Nom_centre_p1</td>
   </tr>
 </table>
 
