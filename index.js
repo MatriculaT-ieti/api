@@ -15,8 +15,8 @@ var item = {};
 var secretkey = "";
 const fs = require("fs");
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json({ limit: '500mb' }));
+app.use(express.bodyParser.urlencoded({limit: '50mb', extended: false }));
+app.use(express.bodyParser.json({ limit: '500mb' }));
 app.use(cors());
 
 // Default:
