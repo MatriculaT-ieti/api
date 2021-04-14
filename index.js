@@ -1,3 +1,6 @@
+//npm install express
+//npm install mongoose
+
 const express = require('express')
 const jwt = require('jsonwebtoken');
 const app = express();
@@ -10,6 +13,7 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var item = {};
 var secretkey = "";
+const fs = require("fs");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({ limit: '500mb' }));
@@ -29,16 +33,61 @@ app.get('/api/login/admins', (req, res) => {
     queryUsers(req, res, true);
 });
 
-// Import cycles:
-app.post('/api/db/cycle/import', (req, res) => {
-    console.log("XDDDDD");
-    importEndPoint(req, res);
-});
 
 // CRUD cycles:
+//read cycles:
 app.get('/api/db/cycles/read', (req, res) => {
     readCycles(req, res);
 });
+
+// Import cycles:
+app.post('/api/db/cycle/import', (req, res) => {
+    importEndPoint(req, res);
+});
+
+//CRUD students:
+//create students:
+app.post('/api/db/student/create', (req, res) => {
+    createStudent(req, res);
+});
+
+//read students:
+app.get('/api/db/student/read', (req, res) => {
+    readStudents(req, res);
+});
+
+//import students:
+app.post('/api/db/student/import', (req, res) => {
+    importStudents(req, res);
+})
+
+//import ufs students:
+app.get('/api/db/student/import/ufs', (req, res) => {
+    importStudentsUFs(req, res);
+})
+
+//upload photos students:
+app.get('/api/db/student/upload', (req, res) => {
+    uploadPhoto(req, res);
+
+})
+
+//download image:
+app.get('/api/db/student/read/image', (req, res) => {
+    readImage(req, res);
+})
+
+//CR requirements
+//read requirementsprofile:
+app.post('/api/db/requirmentsprofile/create', (req, res) => {
+    createRequirment(req, res);
+})
+
+//read requirementsprofile:
+app.get('/api/db/requirmentsprofile/read', (req, res) => {
+    readRequirmentsProfile(req, res);
+})
+
 
 async function queryUsers(req, res, isAdmin) {
     try {
@@ -57,7 +106,6 @@ async function queryUsers(req, res, isAdmin) {
         }
     } catch (error) {}
 
-
 }
 
 function createToken(req, res) {
@@ -70,7 +118,6 @@ function createToken(req, res) {
     var token = jwt.sign({ item: item }, secretkey, {
         expiresIn: 60 * 60 * 24 // expires in 24 hours
     })
-
 
     res.send({
         token
@@ -137,21 +184,179 @@ async function importEndPoint(req, res) {
 
     var json = req.body;
 
-    console.log(json);
-    importMongoDB(json);
+    importMongoDB(json, "cycles");
 }
 
-async function importMongoDB(json) {
+async function importStudents(req, res) {
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const db = client.db('matricula');
 
+    var json = req.body;
+    importMongoDB(json, "users");
+}
+
+async function uploadPhoto(req, res) {
+    try {
+        item = { status: 'warning', description: 'we did not find anything...' };
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
+
+        // Id parameter
+        if (req.query.dni != null || req.query.dni != undefined || req.query.photo != null || req.query.photo != undefined) {
+            item = await db.collection('requirements').findOne({ "dni": req.query.dni });
+            var photos = item.photos;
+            photos.push(req.query.photo);
+
+            var myquery = { dni: req.query.dni };
+            var newvalues = { $set: { photos: photos } };
+            await db.collection("requirements").updateOne(myquery, newvalues, function(err, res) {
+                if (err) throw err;
+                console.log("1 document updated");
+            });
+        }
+
+        res.send("SUCCESFULL");
+        //convertingBase64toImage(item.image, res);
+
+    } catch (error) {
+        console.log("Something went wrong...");
+        console.log(error);
+        res.send({ status: 'error', description: 'something went wrong...' })
+    }
+}
+
+async function readImage(req, res) {
+    try {
+        item = { status: 'warning', description: 'we did not find anything...' };
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
+
+        // Id parameter
+        if (req.query.email != null || req.query.email != undefined) {
+            item = await db.collection('prueba').findOne({ "email": req.query.email });
+        }
+
+        convertingBase64toImage(item.image, res);
+
+    } catch (error) {
+        console.log("Something went wrong...");
+        console.log(error);
+        res.send({ status: 'error', description: 'something went wrong...' })
+    }
+}
+
+function convertingBase64toImage(src, res) {
+    let buff = new Buffer(src, 'base64');
+    let img = buff.toString('ascii');
+    const base64 = fs.readFileSync(img, "base64");
+    const buffer = Buffer.from(base64, "base64");
+    res.send(buffer);
+}
+
+async function importMongoDB(json, collectionBD) {
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const db = client.db('matricula');
+    console.log(json);
     Object.keys(json).forEach(i => {
         var newCycle = json[i];
-        db.collection("cycles").insertOne(newCycle, function(err, res) {
+        db.collection(collectionBD).insertOne(newCycle, function(err, res) {
             if (err) throw err;
-            console.log(i + " document inserted");
+            console.log((i + 1) + " document inserted");
         });
     });
+}
+
+async function readStudents(req, res) {
+    try {
+        item = { status: 'warning', description: 'we did not find anything...' };
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
+
+        // Id parameter
+        if (req.query.cicle_formatiu != null || req.query.cicle_formatiu != undefined) {
+            item = await db.collection('users').find({ 'cicle_formatiu': req.query.cicle_formatiu });
+            item = item.toArray();
+            // Range parameter
+        } else if (req.query.range != null || req.query.range != undefined) {
+            if (Object.keys(JSON.parse(req.query.range))[0] === "from" && Object.keys(JSON.parse(req.query.range))[1] === "to") {
+                let from = JSON.parse(req.query.range).from;
+                let to = JSON.parse(req.query.range).to;
+
+                if (from < to && from >= 0) {
+                    to -= from;
+                    item = db.collection('users').find().skip(from).limit(to);
+                    item = item.toArray();
+                }
+            }
+            // Filter parameter
+        } else if (req.query.filter != "" && req.query.filter != undefined) {
+            item = db.collection('users').find(JSON.parse(req.query.filter));
+            item = item.toArray();
+
+            if (Object.keys(item).length < 0) {
+                item = { status: 'warning', description: 'we did not find anything...' };
+            }
+        }
+        res.send(await item);
+    } catch (error) {
+        console.log("Something went wrong...");
+        console.log(error);
+        res.send({ status: 'error', description: 'something went wrong...' })
+    }
+
+}
+
+async function importStudentsUFs(req, res) {
+    var email = req.query.email;
+    var json = req.query.json;
+
+    if (json == null || json == undefined || json == "" || email == null || email == undefined || email == "") {
+        res.send('json or email field empty');
+    } else {
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
+
+        var myquery = { email: email };
+        var newvalues = { $set: { cursando: json } };
+        await db.collection("users").updateOne(myquery, newvalues, function(err, res) {
+            if (err) throw err;
+            console.log('1 document updated');
+        });
+
+        res.send('User with email ' + email + ' has been updated');
+    }
+}
+
+async function readRequirmentsProfile(req, res) {
+    try {
+        item = { status: 'warning', description: 'we did not find anything...' };
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
+
+        item = await db.collection('requirement_profile').find({});
+        item = item.toArray();
+        res.send(await item);
+    } catch (error) {
+        console.log("Something went wrong...");
+        console.log(error);
+        res.send({ status: 'error', description: 'something went wrong...' })
+    }
+}
+
+async function createRequirment(req, res) {
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const db = client.db('matricula');
+
+    var json = req.body;
+    importMongoDB(json, "requirement_profile");
+}
+
+async function createStudent(req, res) {
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const db = client.db('matricula');
+
+    var json = req.body;
+    importMongoDB(json, "users");
 }
 
 app.listen(port, () => {
