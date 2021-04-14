@@ -337,8 +337,6 @@ async function updateStudent(req, res) {
                             if (err) throw err;
                             console.log(key + ' ' + item.Nom + " document updated");
                         });
-
-                        var updateVal = {};
                     }
                 }
             }
