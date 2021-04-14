@@ -222,9 +222,9 @@ async function uploadPhoto(req, res) {
                 console.log("1 document updated");
             });
         }
-
-        res.send("SUCCESFULL");
-        //convertingBase64toImage(item.image, res);
+        
+        convertingBase64toImage(Object.keys(photo)[0], res);
+        res.send("SUCCESFULL"); 
 
     } catch (error) {
         console.log("Something went wrong...");
