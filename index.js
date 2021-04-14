@@ -217,7 +217,7 @@ async function uploadPhoto(req, res) {
             newPhotos.push(photo);
 
             var myquery = { dni: req.query.dni };
-            var newvalues = { $set: {photos: newPhotos};
+            var newvalues = { $set: {photos: newPhotos}};
             await db.collection("requirements").updateOne(myquery, newvalues, function(err, res) {
                 if (err) throw err;
                 console.log("1 document updated");
