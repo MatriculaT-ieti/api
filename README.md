@@ -279,26 +279,8 @@ Para obtener datos de la colección en formato JSON (<b>Read</b>):
     <td>Selects only one document. If this Id is present <br/> the <b>Range</b> parameter will be ignored.</td>
     <td>Yes</td>
   </tr>
-  <tr>
-    <td>Range</td>
-    <td>JSON {from: 0, to: 10}</td>
-    <td>Selects a range of documents ordered by an internal id</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>Filter</td>
-    <td>JSON {field: filter, ...}</td>
-    <td>Selects a group of documents that matches with the filter</td>
-    <td>No</td>
-  </tr>
 </table>
 
-<table>
-  <tr>
-    <td>Filter by</td>
-    <td>Convocatoria, Estat_solicitud, Primer Cognom, Segon Cognom, Codi_centre_p1, Nom_centre_p1</td>
-  </tr>
-</table>
 
 Para actualizar un documento ya existente en la base de datos (<b>Update</b>):
 <table>
