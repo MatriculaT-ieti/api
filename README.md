@@ -303,10 +303,8 @@ Para actualizar un documento ya existente en la base de datos (<b>Update</b>):
     <td>Yes</td>
   </tr>
   <tr>
-    <td>Filter</td>
-    <td>JSON {field: filter, ...}</td>
-    <td>Selects a group of documents that matches with the filter</td>
-    <td>No</td>
+    <td>Possibilities to update</td>
+    <td>Convocatioria, Codi_solicitud, Tipus_solicitud, Estat_solicitud, Nom, Primer Cognom, Segon Cognom, Identificador_RALC, Tipus_alumne, Codi_centre_p1, nom_centre_p1, naturalesa_centre_p1, municipi_centre_p1, SSTT_centre_p1, codi_ensenyament, cicle_formatiu, codi_modalitat, modalitat, curs_p1, regim_p1, torn_p1, DNI, nie, pass, data_naixament, sexe, nacionalitat, Pais Naixament, municipi_naixament, Tipus via, Nom via, Número via, altres_dades, provincia_residencia, Municipi residència, localitat_residencia, cp, pais_residencia, Telèfon, Correu electrònic, tipus_doc_tutor1, num_doc_tutor1, primer_cognom_tutor1,  segon_cognom_tutor1, tipus_doc_tutor2, num_doc_tutor2, nom_tutor2, primer_cognom_tutor2, segon_cognom_tutor2, codi_centre_proc, nom_centre_proc, codi_ensenyament_proc, nom_ensenyament_proc, curs_proc, llengua_enten, religio, centre_asignat</td>
   </tr>
 </table>
 
