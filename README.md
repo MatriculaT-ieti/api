@@ -428,3 +428,37 @@ Para obtener datos de la colección en formato JSON (<b>Read</b>):
     <th colspan="4" >Get /api/db/requirements/read</th>
   </tr>
 </table>
+
+Para validar documentos a la colección:
+<table>
+  <tr>
+    <th colspan="4" >Response: JSON</th>
+  </tr>
+  <tr>
+    <th colspan="4" >Get /api/db/validation/requirements</th>
+  </tr>
+  <tr>
+    <th>Param</th>
+    <th>Values</th>
+    <th>Description</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+    <td>DNI</td>
+    <td>String</td>
+    <td>DNI student</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
+    <td>Tipo</td>
+    <td>String</td>
+    <td>Type of requirement</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
+    <td>Valido</td>
+    <td>Integer</td>
+    <td>We are going to pass him, 0 if it is denied, 1 if it is on hold and 2 if it is accepted</td>
+    <td>Yes</td>
+  </tr>
+</table>
