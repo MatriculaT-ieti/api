@@ -213,7 +213,7 @@ Para importar un documento csv existente en la base de datos (<b>Import</b>):
     <th colspan="4" >Response: JSON</th>
   </tr>
   <tr>
-    <th colspan="4" >Get /api/db/cycles/import</th>
+    <th colspan="4" >POST /api/db/cycles/import</th>
   </tr>
   <tr>
     <th>Param</th>
@@ -243,7 +243,7 @@ Para añadir documentos a la colección (<b>Create</b>):
     <th colspan="4" >Response: JSON</th>
   </tr>
   <tr>
-    <th colspan="4" >Get /api/db/student/create</th>
+    <th colspan="4" >POST /api/db/student/create</th>
   </tr>
   <tr>
     <th>Param</th>
@@ -288,7 +288,7 @@ Para actualizar un documento ya existente en la base de datos (<b>Update</b>):
     <th colspan="4" >Response: JSON</th>
   </tr>
   <tr>
-    <th colspan="4" >Get /api/db/student/update</th>
+    <th colspan="4" >POST /api/db/student/update</th>
   </tr>
   <tr>
     <th>Param</th>
@@ -346,7 +346,7 @@ Para importar un documento csv existente en la base de datos (<b>Import</b>):
     <th colspan="4" >Response: JSON</th>
   </tr>
   <tr>
-    <th colspan="4" >Get /api/db/student/import</th>
+    <th colspan="4" >POST /api/db/student/import</th>
   </tr>
   <tr>
     <th>Param</th>
@@ -425,7 +425,7 @@ Para obtener datos de la colección en formato JSON (<b>Read</b>):
     <th colspan="4" >Response: JSON</th>
   </tr>
   <tr>
-    <th colspan="4" >Get /api/db/requirements/read</th>
+    <th colspan="4" >POST /api/db/requirements/read</th>
   </tr>
 </table>
 
