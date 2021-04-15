@@ -439,7 +439,7 @@ Para validar documentos a la colección:
     <th colspan="4" >Response: JSON</th>
   </tr>
   <tr>
-    <th colspan="4" >Get /api/db/validation/requirements</th>
+    <th colspan="4" >Get /api/db/requirements/validation</th>
   </tr>
   <tr>
     <th>Param</th>
