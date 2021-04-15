@@ -429,6 +429,10 @@ Para obtener datos de la colección en formato JSON (<b>Read</b>):
   </tr>
 </table>
 
+
+#### CR Requirements Validation
+
+
 Para validar documentos a la colección:
 <table>
   <tr>
