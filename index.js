@@ -15,7 +15,7 @@ var item = {};
 var secretkey = "";
 const fs = require("fs");
 
-app.use(express.urlencoded({limit: '50mb', extended: false }));
+app.use(express.urlencoded({ limit: '50mb', extended: false }));
 app.use(express.json({ limit: '500mb' }));
 app.use(cors());
 
@@ -207,7 +207,7 @@ async function uploadPhoto(req, res) {
         const db = client.db('matricula');
 
         // Id parameter
-        if (req.query.dni != null || req.query.dni != undefined ) {
+        if (req.query.dni != null || req.query.dni != undefined) {
             item = await db.collection('requirements').findOne({ "dni": req.query.dni });
             var photo = req.body;
 
@@ -216,15 +216,15 @@ async function uploadPhoto(req, res) {
             newPhotos.push(Object.keys(photo)[0]);
 
             var myquery = { dni: req.query.dni };
-            var newvalues = { $set: {photos: newPhotos}};
+            var newvalues = { $set: { photos: newPhotos } };
             await db.collection("requirements").updateOne(myquery, newvalues, function(err, res) {
                 if (err) throw err;
                 console.log("1 document updated");
             });
         }
-        
+
         convertingBase64toImage(Object.keys(photo)[0], res);
-        res.send("SUCCESFULL"); 
+        res.send("SUCCESFULL");
 
     } catch (error) {
         console.log("Something went wrong...");
