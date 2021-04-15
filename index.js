@@ -1,7 +1,7 @@
 //npm install express
 //npm install mongoose
 
-const express = require('express')
+const express = require('express');
 const jwt = require('jsonwebtoken');
 const app = express();
 const port = process.env.PORT || 5000;
@@ -11,6 +11,7 @@ var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
 var bodyParser = require('body-parser');
 var cors = require('cors');
+var request = require('request');
 var item = {};
 var secretkey = "";
 const fs = require("fs");
@@ -93,6 +94,10 @@ app.get('/api/db/requirmentsprofile/read', (req, res) => {
     readRequirmentsProfile(req, res);
 })
 
+//CRUD VALIDACIO FOTOS
+app.get('/api/db/validation/requirements', (req, res) => {
+    validationRequirements(req, res);
+})
 
 async function queryUsers(req, res, isAdmin) {
     try {
@@ -211,12 +216,8 @@ async function uploadPhoto(req, res) {
             item = await db.collection('requirements').findOne({ "dni": req.query.dni });
             var photo = req.body;
 
-            console.log(photo);
-            var newPhotos = item.photos;
-            newPhotos.push(Object.keys(photo)[0]);
-
             var myquery = { dni: req.query.dni };
-            var newvalues = { $set: { photos: newPhotos } };
+            var newvalues = { $set: { photos: Object.keys(photo)[0] } };
             await db.collection("requirements").updateOne(myquery, newvalues, function(err, res) {
                 if (err) throw err;
                 console.log("1 document updated");
@@ -240,11 +241,11 @@ async function readImage(req, res) {
         const db = client.db('matricula');
 
         // Id parameter
-        if (req.query.email != null || req.query.email != undefined) {
-            item = await db.collection('prueba').findOne({ "email": req.query.email });
+        if (req.query.dni != null || req.query.dni != undefined) {
+            item = await db.collection('requirements').findOne({ "dni": req.query.dni });
         }
 
-        convertingBase64toImage(item.image, res);
+        convertingBase64toImage(item.photo, res);
 
     } catch (error) {
         console.log("Something went wrong...");
@@ -253,12 +254,17 @@ async function readImage(req, res) {
     }
 }
 
-function convertingBase64toImage(src, res) {
-    let buff = new Buffer(src, 'base64');
-    let img = buff.toString('ascii');
-    const base64 = fs.readFileSync(img, "base64");
-    const buffer = Buffer.from(base64, "base64");
-    res.send(buffer);
+
+
+function convertingBase64toImage(item_image, item, res) {
+    let base64String = 'data:image/png;base64,' + item_image;
+
+    // Remove header
+    let base64Image = base64String.split(';base64,').pop();
+    fs.writeFile('image.png', base64Image, { encoding: 'base64' }, function(err) {
+        console.log('File created');
+    });
+
 }
 
 async function importMongoDB(json, collectionBD) {
@@ -408,6 +414,36 @@ async function createStudent(req, res) {
 
     var json = req.body;
     importMongoDB(json, "users");
+}
+
+async function validationRequirements(req, res) {
+    try {
+        item = { status: 'warning', description: 'we did not find anything...' };
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
+
+        if (req.query.dni != null || req.query.dni != undefined || req.query.tipo != null || req.query.tipo != undefined) {
+            item = await db.collection('requirements').findOne({ 'dni': req.query.dni, 'name': req.query.tipo });
+
+            if (req.query.valido == '0' || req.query.valido == '1' || req.query.valido == '2') {
+                var myquery = { dni: req.query.dni, name: req.query.tipo };
+                var newvalues = { $set: { validado: parseInt(req.query.valido) } };
+                await db.collection("requirements").updateOne(myquery, newvalues, function(err, res) {
+                    if (err) throw err;
+                    console.log('1 document updated');
+                });
+
+                res.send(await item);
+            } else {
+                res.send({ status: 'error', description: '0 denied, 1 on hold, 2 accept' })
+            }
+
+        }
+    } catch (error) {
+        console.log("Something went wrong...");
+        console.log(error);
+        res.send({ status: 'error', description: 'something went wrong...' })
+    }
 }
 
 app.listen(port, () => {
