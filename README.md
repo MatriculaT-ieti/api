@@ -462,7 +462,7 @@ Para validar documentos a la colección:
   <tr>
     <td>Valido</td>
     <td>Integer</td>
-    <td>We are going to pass him, 0 if it is denied, 1 if it is on hold and 2 if it is accepted</td>
+    <td>We are going to pass 0 if it is denied, 1 if it is on hold and 2 if it is accepted</td>
     <td>Yes</td>
   </tr>
 </table>
