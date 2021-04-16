@@ -36,6 +36,11 @@ app.get('/api/login/admins', (req, res) => {
 
 
 // CRUD cycles:
+// create cycles
+app.get('/api/db/cycles/create', (req, res) => {
+    createCycles(req, res);
+})
+
 //read cycles:
 app.get('/api/db/cycles/read', (req, res) => {
     readCycles(req, res);
@@ -89,13 +94,13 @@ app.post('/api/db/requirmentsprofile/create', (req, res) => {
     createRequirment(req, res);
 })
 
-//read requirementsprofile:
+//read requirements profile:
 app.get('/api/db/requirmentsprofile/read', (req, res) => {
     readRequirmentsProfile(req, res);
 })
 
-//CRUD VALIDACIO FOTOS
-app.get('/api/db/validation/requirements', (req, res) => {
+//validation requirment
+app.get('/api/db/requirements/validation', (req, res) => {
     validationRequirements(req, res);
 })
 
@@ -147,6 +152,15 @@ async function upgradeUser(req, res, token) {
     });
 
     //await db.collection('users').updateOne({email : req.query.email}, item);
+}
+
+async function createCycles(req, res) {
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const db = client.db('matricula');
+
+    var json = req.body;
+
+    importMongoDB(json, "cycles");
 }
 
 async function readCycles(req, res) {
