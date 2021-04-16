@@ -1,7 +1,7 @@
 //npm install express
 //npm install mongoose
 
-const express = require('express')
+const express = require('express');
 const jwt = require('jsonwebtoken');
 const app = express();
 const port = process.env.PORT || 5000;
@@ -11,12 +11,13 @@ var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
 var bodyParser = require('body-parser');
 var cors = require('cors');
+var request = require('request');
 var item = {};
 var secretkey = "";
 const fs = require("fs");
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json({ limit: '500mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: false }));
+app.use(express.json({ limit: '500mb' }));
 app.use(cors());
 
 // Default:
@@ -35,6 +36,11 @@ app.get('/api/login/admins', (req, res) => {
 
 
 // CRUD cycles:
+// create cycles
+app.get('/api/db/cycles/create', (req, res) => {
+    createCycles(req, res);
+})
+
 //read cycles:
 app.get('/api/db/cycles/read', (req, res) => {
     readCycles(req, res);
@@ -56,6 +62,11 @@ app.get('/api/db/student/read', (req, res) => {
     readStudents(req, res);
 });
 
+//update students:
+app.get('/api/db/student/update', (req, res) => {
+    updateStudent(req, res);
+});
+
 //import students:
 app.post('/api/db/student/import', (req, res) => {
     importStudents(req, res);
@@ -67,7 +78,7 @@ app.get('/api/db/student/import/ufs', (req, res) => {
 })
 
 //upload photos students:
-app.get('/api/db/student/upload', (req, res) => {
+app.post('/api/db/student/upload', (req, res) => {
     uploadPhoto(req, res);
 
 })
@@ -83,11 +94,15 @@ app.post('/api/db/requirmentsprofile/create', (req, res) => {
     createRequirment(req, res);
 })
 
-//read requirementsprofile:
+//read requirements profile:
 app.get('/api/db/requirmentsprofile/read', (req, res) => {
     readRequirmentsProfile(req, res);
 })
 
+//validation requirment
+app.get('/api/db/requirements/validation', (req, res) => {
+    validationRequirements(req, res);
+})
 
 async function queryUsers(req, res, isAdmin) {
     try {
@@ -137,6 +152,15 @@ async function upgradeUser(req, res, token) {
     });
 
     //await db.collection('users').updateOne({email : req.query.email}, item);
+}
+
+async function createCycles(req, res) {
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const db = client.db('matricula');
+
+    var json = req.body;
+
+    importMongoDB(json, "cycles");
 }
 
 async function readCycles(req, res) {
@@ -202,21 +226,20 @@ async function uploadPhoto(req, res) {
         const db = client.db('matricula');
 
         // Id parameter
-        if (req.query.dni != null || req.query.dni != undefined || req.query.photo != null || req.query.photo != undefined) {
+        if (req.query.dni != null || req.query.dni != undefined) {
             item = await db.collection('requirements').findOne({ "dni": req.query.dni });
-            var photos = item.photos;
-            photos.push(req.query.photo);
+            var photo = req.body;
 
             var myquery = { dni: req.query.dni };
-            var newvalues = { $set: { photos: photos } };
+            var newvalues = { $set: { photos: Object.keys(photo)[0] } };
             await db.collection("requirements").updateOne(myquery, newvalues, function(err, res) {
                 if (err) throw err;
                 console.log("1 document updated");
             });
         }
 
+        convertingBase64toImage(Object.keys(photo)[0], res);
         res.send("SUCCESFULL");
-        //convertingBase64toImage(item.image, res);
 
     } catch (error) {
         console.log("Something went wrong...");
@@ -232,11 +255,11 @@ async function readImage(req, res) {
         const db = client.db('matricula');
 
         // Id parameter
-        if (req.query.email != null || req.query.email != undefined) {
-            item = await db.collection('prueba').findOne({ "email": req.query.email });
+        if (req.query.dni != null || req.query.dni != undefined) {
+            item = await db.collection('requirements').findOne({ "dni": req.query.dni });
         }
 
-        convertingBase64toImage(item.image, res);
+        convertingBase64toImage(item.photo, res);
 
     } catch (error) {
         console.log("Something went wrong...");
@@ -245,12 +268,17 @@ async function readImage(req, res) {
     }
 }
 
-function convertingBase64toImage(src, res) {
-    let buff = new Buffer(src, 'base64');
-    let img = buff.toString('ascii');
-    const base64 = fs.readFileSync(img, "base64");
-    const buffer = Buffer.from(base64, "base64");
-    res.send(buffer);
+
+
+function convertingBase64toImage(item_image, item, res) {
+    let base64String = 'data:image/png;base64,' + item_image;
+
+    // Remove header
+    let base64Image = base64String.split(';base64,').pop();
+    fs.writeFile('image.png', base64Image, { encoding: 'base64' }, function(err) {
+        console.log('File created');
+    });
+
 }
 
 async function importMongoDB(json, collectionBD) {
@@ -296,6 +324,12 @@ async function readStudents(req, res) {
             if (Object.keys(item).length < 0) {
                 item = { status: 'warning', description: 'we did not find anything...' };
             }
+        } else if (req.query.email != "" && req.query.email != undefined) {
+            item = await db.collection('users').findOne({ 'Correu electrònic': req.query.email });
+
+            if (item == null) {
+                item = { status: 'warning', description: 'we did not find anything...' };
+            }
         }
         res.send(await item);
     } catch (error) {
@@ -304,6 +338,43 @@ async function readStudents(req, res) {
         res.send({ status: 'error', description: 'something went wrong...' })
     }
 
+}
+
+async function updateStudent(req, res) {
+    try {
+        item = { status: 'warning', description: 'we did not find anything...' };
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
+
+        // Id parameter
+        if (req.query.email != null || req.query.email != undefined || req.query.json != null || req.query.json != undefined) {
+            item = await db.collection('users').findOne({ 'Correu electrònic': req.query.email });
+            var json = JSON.parse(req.query.json);
+            for (var key in json) {
+                for (var keyItem in item) {
+                    if (key == keyItem) {
+                        var updateVal = {};
+                        updateVal[key] = json[key];
+                        var myquery = { 'Correu electrònic': req.query.email };
+                        var newvalues = { $set: updateVal };
+                        await db.collection("users").updateOne(myquery, newvalues, function(err, res) {
+                            if (err) throw err;
+                            console.log(key + ' ' + item.Nom + " document updated");
+                        });
+                    }
+                }
+            }
+
+            if (item == null) {
+                item = { status: 'warning', description: 'we did not find anything...' };
+            }
+        }
+        res.send({ status: 'successful', description: 'User: ' + item.Nom + ' it has been updated' });
+    } catch (error) {
+        console.log("Something went wrong...");
+        console.log(error);
+        res.send({ status: 'error', description: 'something went wrong...' })
+    }
 }
 
 async function importStudentsUFs(req, res) {
@@ -357,6 +428,36 @@ async function createStudent(req, res) {
 
     var json = req.body;
     importMongoDB(json, "users");
+}
+
+async function validationRequirements(req, res) {
+    try {
+        item = { status: 'warning', description: 'we did not find anything...' };
+        const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const db = client.db('matricula');
+
+        if (req.query.dni != null || req.query.dni != undefined || req.query.tipo != null || req.query.tipo != undefined) {
+            item = await db.collection('requirements').findOne({ 'dni': req.query.dni, 'name': req.query.tipo });
+
+            if (req.query.valido == '0' || req.query.valido == '1' || req.query.valido == '2') {
+                var myquery = { dni: req.query.dni, name: req.query.tipo };
+                var newvalues = { $set: { validado: parseInt(req.query.valido) } };
+                await db.collection("requirements").updateOne(myquery, newvalues, function(err, res) {
+                    if (err) throw err;
+                    console.log('1 document updated');
+                });
+
+                res.send(await item);
+            } else {
+                res.send({ status: 'error', description: '0 denied, 1 on hold, 2 accept' })
+            }
+
+        }
+    } catch (error) {
+        console.log("Something went wrong...");
+        console.log(error);
+        res.send({ status: 'error', description: 'something went wrong...' })
+    }
 }
 
 app.listen(port, () => {
