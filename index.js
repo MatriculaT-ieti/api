@@ -230,16 +230,21 @@ async function uploadPhoto(req, res) {
             item = await db.collection('requirements').findOne({ "dni": req.query.dni });
             var photo = req.body;
 
+            console.log(photo);
+            var newPhotos = item.photos;
+            newPhotos.push(Object.keys(photo)[1]);
+
             var myquery = { dni: req.query.dni };
             var newvalues = { $set: { photos: Object.keys(photo)[0] } };
             await db.collection("requirements").updateOne(myquery, newvalues, function(err, res) {
                 if (err) throw err;
                 console.log("1 document updated");
             });
-        }
 
-        convertingBase64toImage(Object.keys(photo)[0], res);
-        res.send("SUCCESFULL");
+        }
+        
+        //convertingBase64toImage(Object.keys(photo)[0], res);
+        res.send("SUCCESFULL"); 
 
     } catch (error) {
         console.log("Something went wrong...");
