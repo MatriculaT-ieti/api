@@ -359,7 +359,6 @@ async function updateStudent(req, res) {
         if (req.query.email != null || req.query.email != undefined) {
             item = await db.collection('users').findOne({ 'Correu electrònic': req.query.email });
             var json = req.body
-            updateVal[key] = json[key];
             var myquery = { 'Correu electrònic': req.query.email };
             var newvalues = { $set: json };
             await db.collection("users").updateOne(myquery, newvalues, function(err, res) {
