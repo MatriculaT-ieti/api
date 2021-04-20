@@ -177,13 +177,10 @@ Para actualizar un documento ya existente en la base de datos (<b>Update</b>):
     <td>Selects a group of documents that matches with the filter</td>
     <td>No</td>
   </tr>
-</table>
   <tr>
     <td>Update By</td>
     <td>codi_cicle_formatiu, nom_cicle_formatiu, codi_adaptacio_curricular, hores_cicle_formatiu, nmoduls, data_inici_cicle_formatiu, data_fi_cicle_formatiu, codi_modul, nom_modul, durada_min_modul, durada_max_modul, data_inici_modul, data_fi_modul, unitats, codi_unitat_formativa, nom_unitat_formativa, durada_unitat_formativa, indicador_fct, indicador_idioma, indicador_projecte</td>
   </tr>
-<table>
-
 </table>
 
 Para borrar un documento existente en la base de datos (<b>Delete</b>):
