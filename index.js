@@ -358,9 +358,8 @@ async function updateStudent(req, res) {
         // Id parameter
         if (req.query.email != null || req.query.email != undefined) {
             item = await db.collection('users').findOne({ 'Correu electrònic': req.query.email });
-            var json = req.body
             var myquery = { 'Correu electrònic': req.query.email };
-            var newvalues = { $set: json };
+            var newvalues = { $set: req.body };
             await db.collection("users").updateOne(myquery, newvalues, function(err, res) {
                 if (err) throw err;
                 console.log(key + ' ' + item.Nom + " document updated");
