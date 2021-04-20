@@ -67,7 +67,7 @@ app.get('/api/db/student/read', (req, res) => {
 });
 
 //update students:
-app.get('/api/db/student/update', (req, res) => {
+app.post('/api/db/student/update', (req, res) => {
     updateStudent(req, res);
 });
 
