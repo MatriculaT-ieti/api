@@ -242,9 +242,9 @@ async function uploadPhoto(req, res) {
             });
 
         }
-        
+
         //convertingBase64toImage(Object.keys(photo)[0], res);
-        res.send("SUCCESFULL"); 
+        res.send("SUCCESFULL");
 
     } catch (error) {
         console.log("Something went wrong...");
@@ -352,9 +352,9 @@ async function updateStudent(req, res) {
         const db = client.db('matricula');
 
         // Id parameter
-        if (req.query.email != null || req.query.email != undefined || req.query.json != null || req.query.json != undefined) {
+        if (req.query.email != null || req.query.email != undefined) {
             item = await db.collection('users').findOne({ 'Correu electrònic': req.query.email });
-            var json = JSON.parse(req.query.json);
+            var json = JSON.parse(req.body);
             for (var key in json) {
                 for (var keyItem in item) {
                     if (key == keyItem) {
