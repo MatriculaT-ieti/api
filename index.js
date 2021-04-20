@@ -358,15 +358,12 @@ async function updateStudent(req, res) {
         // Id parameter
         if (req.query.email != null || req.query.email != undefined) {
             item = await db.collection('users').findOne({ 'Correu electrònic': req.query.email });
-            if (err) throw err;
             var myquery = { 'Correu electrònic': req.query.email };
-            db.collection("users").remove(myquery, function(err, obj) {
+            var newvalues = { $set: req.body };
+            await db.collection("users").updateOne(myquery, newvalues, function(err, res) {
                 if (err) throw err;
-                console.log(item.Nom + " document(s) deleted");
-                db.close();
+                console.log(key + ' ' + item.Nom + " document updated");
             });
-
-            createStudentByUpdate(req.body);
 
             if (item == null) {
                 item = { status: 'warning', description: 'we did not find anything...' };
@@ -467,14 +464,6 @@ async function createStudent(req, res) {
     const db = client.db('matricula');
 
     var json = req.body;
-    importMongoDB(json, "users");
-}
-
-async function createStudentByUpdate(student) {
-    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    const db = client.db('matricula');
-
-    var json = student
     importMongoDB(json, "users");
 }
 
